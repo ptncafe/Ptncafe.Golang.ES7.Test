@@ -35,19 +35,26 @@ func main() {
 
 }
 
-func AddStore( esClient * elastic.Client, storeDto model.Store ,ctx context.Context) error {
-	err := esClient.Index().Index("store").Type("store").Id(fmt.Sprint(storeDto.Id)).BodyJson(storeDto)
+func AddStore( esClient  elastic.Client, storeDto model.Store ,ctx context.Context) error {
+	store, err := esClient.Index().Index("store").Type("store").Id(fmt.Sprint(storeDto.Id)).BodyJson(storeDto).Do(ctx)
 	if err != nil {
 		// Handle error
-		panic(err)
+		return err
 	}
-	fmt.Printf("AddStore Index done",)
+	fmt.Printf("AddStore Index done %s",spew.Sdump(store))
 
 	return nil
 }
 func GetStoreById (c *gin.Context) {
 	id := c.DefaultQuery("id", "0")
-	var store  = elastic_provider.GetClientES().Get().Index("store").Type("store").Id(id)
+	clientEs := elastic_provider.GetClientES()
+	ctx := context.Background()
+
+	var store,err  = clientEs.Get().Index("store").Type("store").Id(id).Do(ctx)
+	if err!=nil{
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
 	fmt.Printf("GetStoreById %s", id)
 	c.JSON(200, store)
 }
@@ -59,7 +66,10 @@ func UpdateStore (c *gin.Context) {
 		c.String(http.StatusBadRequest, `the body should be formA`)
 		return
 	}
-	if errAdd := AddStore(elastic_provider.GetClientES(), store, ctx); errAdd != nil{
+
+	clientEs := elastic_provider.GetClientES()
+
+	if errAdd := AddStore(clientEs, store, ctx); errAdd != nil{
 		c.String(http.StatusInternalServerError, errAdd.Error())
 		return
 	}

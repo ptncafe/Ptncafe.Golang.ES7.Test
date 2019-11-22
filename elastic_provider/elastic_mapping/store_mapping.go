@@ -6,21 +6,13 @@ func StoreMapping() string {
 	{
 		"mappings":{
 			"properties":{
-				"id":{
-					"type": "keyword"
-				},
 				"name":{
 					"type": "text"
 				},
 				"code":{
 					"type": "keyword"
-				},
-				"shop_type": {
-					"type": "keyword"
-				},
-				"store_level": {
-					"type": "keyword"
 				}
+			
 			}
 		}
 	}`

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var clientEs * elastic.Client
+var clientEs  elastic.Client
 
 func InitES(ctx context.Context) (* elastic.Client, error){
 	client, err := elastic.NewClient(
@@ -32,11 +32,11 @@ func InitES(ctx context.Context) (* elastic.Client, error){
 	if err != nil {
 		panic(err.Error())
 	}
-	clientEs = client
+	clientEs = *client
 	return client,err
 }
 
 
-func GetClientES()* elastic.Client{
+func GetClientES() elastic.Client{
 	return clientEs
 }
