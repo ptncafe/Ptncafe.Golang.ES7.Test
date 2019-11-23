@@ -52,11 +52,15 @@ func GetStoreById (c *gin.Context) {
 
 	var store,err  = clientEs.Get().Index("store").Type("store").Id(id).Do(ctx)
 	if err!=nil{
-		c.String(http.StatusInternalServerError, err.Error())
+		e, ok := err.(*elastic.Error)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+		c.JSON(e.Status, e)
 		return
 	}
-	fmt.Printf("GetStoreById %s", id)
-	c.JSON(200, store)
+	fmt.Printf("GetStoreById %s", spew.Sdump(store))
+	c.JSON(200,  store.Source)
 }
 
 func UpdateStore (c *gin.Context) {
@@ -70,7 +74,12 @@ func UpdateStore (c *gin.Context) {
 	clientEs := elastic_provider.GetClientES()
 
 	if errAdd := AddStore(clientEs, store, ctx); errAdd != nil{
-		c.String(http.StatusInternalServerError, errAdd.Error())
+		e, ok := errAdd.(*elastic.Error)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, errAdd)
+
+		}
+		c.JSON(e.Status, e)
 		return
 	}
 	fmt.Printf("AddStore", spew.Sdump(store))

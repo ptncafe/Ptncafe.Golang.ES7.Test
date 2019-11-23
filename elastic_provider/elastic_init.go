@@ -14,7 +14,7 @@ var clientEs  elastic.Client
 
 func InitES(ctx context.Context) (* elastic.Client, error){
 	client, err := elastic.NewClient(
-		elastic.SetURL("http://192.168.120.46:9200"),
+		elastic.SetURL("https://u1csqf6a0i:ujcu1051my@ptncafe-test-golang-8394376725.ap-southeast-2.bonsaisearch.net:443"),
 		elastic.SetSniff(false),
 		elastic.SetHealthcheckInterval(10*time.Second),
 		//elastic.SetRetrier(NewCustomRetrier()),
