@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/olivere/elastic/v7"
 	"net/http"
+	"strconv"
 )
 
 func main() {
@@ -46,21 +47,63 @@ func AddStore( esClient  elastic.Client, storeDto model.Store ,ctx context.Conte
 	return nil
 }
 func GetStoreById (c *gin.Context) {
-	id := c.DefaultQuery("id", "0")
+	idString := c.DefaultQuery("id", "0")
+	nameString := c.DefaultQuery("name", "")
+	codeString := c.DefaultQuery("code", "")
 	clientEs := elastic_provider.GetClientES()
+	id, _ := strconv.Atoi(idString)
 	ctx := context.Background()
-
-	var store,err  = clientEs.Get().Index("store").Id(id).Do(ctx)
-	if err!=nil{
-		e, ok := err.(*elastic.Error)
-		if !ok {
-			c.JSON(http.StatusInternalServerError, err)
+	if id > 0 {
+		var store,err  = clientEs.Get().Index("store").Id(idString).Do(ctx)
+		if err != nil{
+			e, ok := err.(*elastic.Error)
+			if !ok {
+				c.JSON(http.StatusInternalServerError, err)
+			}
+			c.JSON(e.Status, e)
+			return
 		}
-		c.JSON(e.Status, e)
+		fmt.Printf("GetStoreById %s", spew.Sdump(store))
+		c.JSON(200,  store.Source)
 		return
 	}
-	fmt.Printf("GetStoreById %s", spew.Sdump(store))
-	c.JSON(200,  store.Source)
+	if len(nameString) > 0 {
+		termQuery := elastic.NewTermQuery("name", nameString)
+		var store,err  = clientEs.Search().Index("store").Query(termQuery).
+		From(0).Size(10).   // take documents 0-9
+		Pretty(true).       // pretty print request and response JSON
+		Do(ctx)
+		if err != nil{
+			e, ok := err.(*elastic.Error)
+			if !ok {
+				c.JSON(http.StatusInternalServerError, err)
+			}
+			c.JSON(e.Status, e)
+			return
+		}
+		fmt.Printf("SearchStore %s", spew.Sdump(store))
+		c.JSON(200,  store)
+		return
+	}
+	if len(codeString) > 0 {
+		termQuery := elastic.NewTermQuery("code", codeString)
+		var store,err  = clientEs.Search().Index("store").Query(termQuery).
+			From(0).Size(10).   // take documents 0-9
+			Pretty(true).       // pretty print request and response JSON
+			Do(ctx)
+		if err != nil{
+			e, ok := err.(*elastic.Error)
+			if !ok {
+				c.JSON(http.StatusInternalServerError, err)
+			}
+			c.JSON(e.Status, e)
+			return
+		}
+		fmt.Printf("SearchStore %s", spew.Sdump(store))
+		c.JSON(200,  store)
+		return
+	}
+	c.JSON(200,  nil)
 }
 
 func UpdateStore (c *gin.Context) {
