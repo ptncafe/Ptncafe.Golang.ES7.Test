@@ -4,7 +4,6 @@
     <list default="true" id="621747eb-1a22-4383-a8ac-109f26f9a111" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/elastic_provider/elastic_mapping/store_mapping.go" beforeDir="false" afterPath="$PROJECT_DIR$/elastic_provider/elastic_mapping/store_mapping.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

@@ -14,6 +14,14 @@ func StoreMapping() string {
 				},
 				"code":{
 					"type":  "keyword"
+				},
+				"shop_type":{
+					"type": "integer",
+					"null_value": 0
+				},
+				"store_level":{
+					"type": "integer",
+					"null_value": 0
 				}
 			}
 		}
