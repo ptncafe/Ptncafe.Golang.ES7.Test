@@ -36,7 +36,7 @@ func main() {
 }
 
 func AddStore( esClient  elastic.Client, storeDto model.Store ,ctx context.Context) error {
-	store, err := esClient.Index().Index("store").Type("store").Id(fmt.Sprint(storeDto.Id)).BodyJson(storeDto).Do(ctx)
+	store, err := esClient.Index().Index("store").Id(fmt.Sprint(storeDto.Id)).BodyJson(storeDto).Do(ctx)
 	if err != nil {
 		// Handle error
 		return err
@@ -50,7 +50,7 @@ func GetStoreById (c *gin.Context) {
 	clientEs := elastic_provider.GetClientES()
 	ctx := context.Background()
 
-	var store,err  = clientEs.Get().Index("store").Type("store").Id(id).Do(ctx)
+	var store,err  = clientEs.Get().Index("store").Id(id).Do(ctx)
 	if err!=nil{
 		e, ok := err.(*elastic.Error)
 		if !ok {
